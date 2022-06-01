@@ -1,6 +1,6 @@
 #include <MIDI.h>  // Add Midi Library
 
-MIDI_CREATE_DEFAULT_INSTANCE();
+MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 
 int LED = 13;
 int pot_last_1 = 0;
@@ -10,17 +10,18 @@ unsigned long new_time = 0;
 
 void setup()
 {
-
+  
+  pinMode (LED, OUTPUT); // Set Arduino board pin 13 to output
+  
+  Serial.begin(115200); // para enviar señal midi por puerto usb
+  Serial1.begin(31250); // para lectura de señal midi del teclado
+  
   MIDI.begin(MIDI_CHANNEL_OMNI);
   MIDI.setHandleNoteOn(MyHandleNoteOn);
   MIDI.setHandleNoteOff(MyHandleNoteOff);
   MIDI.setHandlePitchBend(MyHandlePitchBend);
   MIDI.setHandleAfterTouchChannel(MyHandleAfterTouchChannel);
 
-  Serial.begin(115200); // midi a usb
-
-  pinMode (LED, OUTPUT); // Set Arduino board pin 13 to output
-  
 }
 
 void loop()
@@ -80,3 +81,5 @@ void MyHandleAfterTouchChannel(byte channel, byte pressure)
   Serial.write(pressure); // se envia byte de pressure
   digitalWrite(LED, LOW); //Turn LED off
 }
+
+
