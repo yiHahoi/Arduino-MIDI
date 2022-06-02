@@ -5,6 +5,7 @@ MIDI_CREATE_INSTANCE(HardwareSerial, Serial1, MIDI);
 int LED = 13;
 int pot_last_1 = 0;
 int pot_new_1 = 0;
+unsigned long step_time = 1000;
 unsigned long prev_time = 0;
 unsigned long new_time = 0;
 
@@ -29,7 +30,7 @@ void loop()
   MIDI.read();
 
   new_time = millis();
-  if(new_time >= prev_time){
+  if(new_time - prev_time >= step_time){
     prev_time = new_time;
     pot_new_1 = analogRead(0) >> 3;
     if(pot_new_1 != pot_last_1)
@@ -81,5 +82,3 @@ void MyHandleAfterTouchChannel(byte channel, byte pressure)
   Serial.write(pressure); // se envia byte de pressure
   digitalWrite(LED, LOW); //Turn LED off
 }
-
-
